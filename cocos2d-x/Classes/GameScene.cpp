@@ -104,22 +104,42 @@ bool GameScene::init()
 		label->setPosition(Vec2(origin.x + visibleSize.width / 2,
 			origin.y + visibleSize.height - label->getContentSize().height));
 		// add the label as a child to this layer
-		this->addChild(label, 60);
+		this->addChild(label, 0);
 	}
-	// add "HelloWorld" splash screen"
-	auto sprite = Sprite::create("HelloWorld.png");
-	if (sprite == nullptr)
-	{
-		problemLoading("'HelloWorld.png'");
-	}
-	else
-	{
-		// position the sprite on the center of the screen
-		sprite->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
 
-		// add the sprite as a child to this layer
-		this->addChild(sprite, 0);
-	}
+	// playerレイヤー
+	auto plLayer = Layer::create();
+	plLayer->setName("PLAYER_IMAGE");
+	this->addChild(plLayer, 20);
+	// プレイヤー画像（初期設定のあいつ）
+	auto spriteIC = Sprite::create("HelloWorld.png");
+	spriteIC->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+	plLayer->addChild(spriteIC,2);
+	auto moveBy = MoveBy::create(5, Vec2(200, 0));
+	spriteIC->runAction(moveBy);
+
+
+	// 背景
+	auto bgLayer = Layer::create();
+	bgLayer->setName("BG_IMAGE");// レイヤーの名前
+	this->addChild(bgLayer, 0);
+	// 背景画像
+	auto bgSprite = Sprite::create("Environment/background.png");
+	bgSprite->setPosition(Vec2(0, 0));
+	bgSprite->setAnchorPoint(Vec2(0, 0));// 左上に描画
+	bgLayer->addChild(bgSprite, 0);
+
+
+	// スクロール(sc)設定をいれるレイヤー
+	auto scLayer = Layer::create();
+	scLayer->setName("SC_IMAGE");
+	this->addChild(scLayer, 0);
+
+
+	/* 右スクロール*/
+	scLayer->runAction(Follow::create(spriteIC, Rect(0, 0, visibleSize.width*2.5, visibleSize.height)));// キャラが移動して動く
+	bgLayer->runAction(Follow::create(spriteIC, Rect(0, 0, visibleSize.width*2.5, visibleSize.height)));// 背景がついていく
+
 
 	return true;
 }
