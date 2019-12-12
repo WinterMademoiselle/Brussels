@@ -23,6 +23,7 @@
  ****************************************************************************/
 
 #include "GameScene.h"
+#include "obj/Player.h"
 #include "SimpleAudioEngine.h"
 
 
@@ -104,42 +105,52 @@ bool GameScene::init()
 		label->setPosition(Vec2(origin.x + visibleSize.width / 2,
 			origin.y + visibleSize.height - label->getContentSize().height));
 		// add the label as a child to this layer
-		this->addChild(label, 100);
+		this->addChild(label, (int)zOlder::BG);
 	}
-
-	// playerレイヤー
-	auto plLayer = Layer::create();
-	plLayer->setName("PLAYER_IMAGE");
-	this->addChild(plLayer, 20);
-	// プレイヤー画像（初期設定のあいつ）
-	auto spriteIC = Sprite::create("HelloWorld.png");
-	spriteIC->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
-	plLayer->addChild(spriteIC,2);
-	auto moveBy = MoveBy::create(5, Vec2(200, 0));
-	spriteIC->runAction(moveBy);
-
 
 	// 背景
 	auto bgLayer = Layer::create();
-	bgLayer->setName("BG_IMAGE");// レイヤーの名前
-	this->addChild(bgLayer, 0);
+	bgLayer->setName("BG_LAYER");// レイヤーの名前
+	this->addChild(bgLayer, (int)zOlder::BG);
 	// 背景画像
 	auto bgSprite = Sprite::create("Environment/background.png");
 	bgSprite->setPosition(Vec2(0, 0));
 	bgSprite->setAnchorPoint(Vec2(0, 0));// 左上に描画
-	bgLayer->addChild(bgSprite, 0);
-
+	bgLayer->addChild(bgSprite, (int)zOlder::BG);
 
 	// スクロール(sc)設定をいれるレイヤー
 	auto scLayer = Layer::create();
-	scLayer->setName("SC_IMAGE");
-	this->addChild(scLayer, 0);
+	scLayer->setName("SC_LAYER");
+	this->addChild(scLayer, (int)zOlder::SC);
 
+	// playerレイヤー
+	//auto plLayer = Layer::create();
+	//plLayer->setName("PLAYER_LAYER");
+	//this->addChild(plLayer, (int)zOlder::CHAR);
+
+	// プレイヤー画像（初期設定のあいつ）
+	//auto spriteIC = Sprite::create("HelloWorld.png");
+	//spriteIC->setPosition(Vec2(visibleSize.width / 2 + origin.x, visibleSize.height / 2 + origin.y));
+	//plLayer->addChild(spriteIC, (int)zOlder::CHAR);
+	//auto moveBy = MoveBy::create(5, Vec2(200, 0));
+	//spriteIC->runAction(moveBy);
 
 	/* 右スクロール*/
-	scLayer->runAction(Follow::create(spriteIC, Rect(0, 0, visibleSize.width*2.5, visibleSize.height)));// キャラが移動して動く
-	bgLayer->runAction(Follow::create(spriteIC, Rect(0, 0, visibleSize.width*2.5, visibleSize.height)));// 背景がついていく
+	//scLayer->runAction(Follow::create(spriteIC, Rect(0, 0, visibleSize.width*2.5, visibleSize.height)));// キャラが移動して動く
+	//bgLayer->runAction(Follow::create(spriteIC, Rect(0, 0, visibleSize.width*2.5, visibleSize.height)));// 背景がついていく
 
+	// プレイヤー画像(授業のあいつ)
+	auto charLayer = Layer::create();
+	charLayer->setName("CHAR_LAYER");
+	auto plSprite = Player::createPlayer();
+	charLayer->addChild((Node*)plSprite, (int)zOlder::CHAR);
+	plSprite->setName("player");
+
+	// キャラレイヤーをGameSceneにぶら下げる
+	this->addChild(charLayer, (int)zOlder::CHAR);
+
+	// playerクラスのupdateを呼ぶ
+	plSprite->scheduleUpdate();
 
 	return true;
 }

@@ -27,6 +27,15 @@
 
 #include "cocos2d.h"
 
+ // zOlder(奥行き)
+enum class zOlder {
+	BG,			// 背景
+	SC,			// スクロール
+	CHAR,		// キャラクター
+	FRONT,		// 前面
+};
+
+
 class GameScene : public cocos2d::Scene
 {
 public:
